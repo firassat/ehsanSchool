@@ -100,8 +100,12 @@ export const studentLogin = asyncHandler(async (req, res) => {
     "section_id",
     "class_id",
   ]);
-  if (!student) res.json({ message: "الرمز غير صحيح" });
-
+  if (!student) return res.json({ message: "الرمز غير صحيح" });
+  const name1 = student?.full_name;
+  const name2 = req.body?.full_name;
+  if (name1 !== name2) {
+    return res.json({ message: "الاسم غير صحيح" });
+  }
   const access_token = jwt.sign({ id: student.id }, process.env.SECRTKEY);
   return res.json({ data: student, token: access_token });
 });
