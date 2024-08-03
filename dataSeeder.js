@@ -1,17 +1,26 @@
-export const classes = [
-  { name: "السابع" },
-  { name: "الثامن" },
-  { name: "التاسع" },
-  { name: "العاشر" },
-  { name: "الحادي عشر" },
-  { name: "البكالوريا" },
-];
+export const classes = (id) => {
+  return [
+    { name: "السابع", section: "الاولى", admin: id },
+    { name: "الثامن", section: "الاولى", admin: id },
+    { name: "التاسع", section: "الاولى", admin: id },
+    { name: "العاشر", section: "الاولى", admin: id },
+    { name: "الحادي عشر", section: "الاولى", admin: id },
+    { name: "البكالوريا", section: "الاولى", admin: id },
+    { name: "السابع", section: "الثانية", admin: id },
+    { name: "الثامن", section: "الثانية", admin: id },
+    { name: "التاسع", section: "الثانية", admin: id },
+    { name: "العاشر", section: "الثانية", admin: id },
+    { name: "الحادي عشر", section: "الثانية", admin: id },
+    { name: "البكالوريا", section: "الثانية", admin: id },
+    { name: "السابع", section: "الثالثة", admin: id },
+    { name: "الثامن", section: "الثالثة", admin: id },
+    { name: "التاسع", section: "الثالثة", admin: id },
+    { name: "العاشر", section: "الثالثة", admin: id },
+    { name: "الحادي عشر", section: "الثالثة", admin: id },
+    { name: "البكالوريا", section: "الثالثة", admin: id },
+  ];
+};
 
-export const sections = [
-  { name: "الاولى" },
-  { name: "الثانية" },
-  { name: "الثالثة" },
-];
 export const military_services = [
   { name: "منتهي من الخدمة" },
   { name: "اخدم حاليا" },
@@ -38,3 +47,18 @@ export const sectors = [
   { name: "المزة" },
   { name: "ضاحية قدسيا" },
 ];
+export const subjects = (classes) => {
+  return [
+    { name: "رياضيات", class_id: classes },
+    { name: "فيزياء", class_id: classes },
+    { name: "كيمياء", class_id: classes },
+    { name: "علوم", class_id: classes },
+    { name: "عربي", class_id: classes },
+    { name: "فقه", class_id: classes },
+    { name: "عقيدة", class_id: classes },
+    { name: "انكليزي", class_id: classes },
+    { name: "تلاوة", class_id: classes },
+    { name: "فرنسي", class_id: classes },
+    { name: "سيرة", class_id: classes },
+  ];
+};

@@ -44,11 +44,6 @@ const StudentsSchema = new mongoose.Schema(
       required: true,
       ref: "Classes",
     },
-    section_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "Sections",
-    },
   },
   { timestamps: true }
 );
@@ -65,7 +60,7 @@ export function validateStudents(obj) {
     join_date: Joi.required(),
     address: Joi.string().required(),
     class_id: Joi.string().required(),
-    section_id: Joi.string().required(),
+
     mobile_num: Joi.string(),
     tele_num: Joi.string(),
   })

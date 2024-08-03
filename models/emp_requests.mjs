@@ -52,7 +52,7 @@ const emp_requestsSchema = new mongoose.Schema(
     },
     request_type_id: {
       type: mongoose.Schema.Types.ObjectId,
-      default: "663d21e8977d6f592c1c6125",
+
       ref: "request_type",
     },
 
