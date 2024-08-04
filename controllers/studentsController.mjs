@@ -174,6 +174,7 @@ export const addStudentsMarks = async (req, res) => {
     const type = req.body.type;
     const subject_id = req.body.subject_id;
     const full_mark = req.body.full_mark;
+    const date = req.body.date;
 
     req.body.students?.map(async (student) => {
       if (!student.id || !student.mark) {
@@ -184,6 +185,7 @@ export const addStudentsMarks = async (req, res) => {
       }
       const mark = await new Marks({
         type,
+        date,
         subject_id,
         full_mark,
         student_id: student.id,
@@ -336,6 +338,34 @@ export const unRegisterEvent = asyncHandler(async (req, res) => {
   };
   return res.json({ status: true, data: event2 });
 });
+export const showStudentMarks2 = asyncHandler(async (req, res) => {
+  if (!req.student_id || !req.params.id) {
+    return res.status(400).json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+
+  const test = await Marks.find({
+    student_id: req.student_id,
+    subject_id: req.params.id,
+  }).populate(["subject_id"]);
+
+  let full_mark = 0;
+  let mark = 0;
+  test.map((i) => {
+    full_mark += i.full_mark;
+    mark += i.mark;
+  });
+
+  const average = (mark / full_mark) * 100;
+
+  return res.json({
+    status: true,
+    average,
+    data: test,
+  });
+});
 export const showStudentMarks = asyncHandler(async (req, res) => {
   if (!req.student_id) {
     return res.status(400).json({
@@ -343,6 +373,7 @@ export const showStudentMarks = asyncHandler(async (req, res) => {
       message: "حدث خطأ ما",
     });
   }
+
   const test = await Marks.find({
     student_id: req.student_id,
     type: "مذاكرة",
@@ -386,6 +417,35 @@ export const showStudentMarks = asyncHandler(async (req, res) => {
     exam: exam,
     oral: oral,
     test: test,
+  });
+});
+export const homePage = asyncHandler(async (req, res) => {
+  if (!req.student_id) {
+    return res.status(400).json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+
+  const exam = await Marks.find({
+    student_id: req.student_id,
+  });
+  const absence = await Student_absence.find({
+    student_id: req.student_id,
+    delay_time: { $exists: false },
+  });
+
+  let full_mark_exam = 0;
+  let mark_exam = 0;
+  exam.map((i) => {
+    full_mark_exam += i.full_mark;
+    mark_exam += i.mark;
+  });
+
+  return res.json({
+    status: true,
+    absence: absence.length,
+    full_average: mark_exam / full_mark_exam,
   });
 });
 export const showSubjectForStudent = asyncHandler(async (req, res) => {

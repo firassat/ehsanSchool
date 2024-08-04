@@ -7,11 +7,13 @@ import {
   addStudentViolation,
   deleteStudentsAbsence,
   deleteStudentViolation,
+  homePage,
   registerEvent,
   showClasses,
   showEvents,
   showStudentAbsence,
   showStudentMarks,
+  showStudentMarks2,
   showStudentProfile,
   showStudentsAbsence,
   showStudentsAndSubjectForClass,
@@ -53,11 +55,13 @@ studentsRoutes.post("/addComplaint", checkStudentId, addComplaint);
 studentsRoutes.post("/registerEvent", registerEvent);
 studentsRoutes.post("/unRegisterEvent", unRegisterEvent);
 studentsRoutes.get("/showStudentMarks", checkStudentId, showStudentMarks);
+studentsRoutes.get("/showStudentMarks/:id", checkStudentId, showStudentMarks2);
 studentsRoutes.get(
   "/showSubjectForStudent",
   checkStudentId,
   showSubjectForStudent
 );
+studentsRoutes.get("/homePage", checkStudentId, homePage);
 
 //web&&mobile
 studentsRoutes.get("/showEvents", showEvents);

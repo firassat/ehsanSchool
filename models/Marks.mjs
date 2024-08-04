@@ -6,6 +6,10 @@ const MarksSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    date: {
+      type: Number,
+      required: true,
+    },
     full_mark: {
       type: Number,
       required: true,
