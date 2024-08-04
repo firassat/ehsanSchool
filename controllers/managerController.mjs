@@ -3,7 +3,7 @@ import { events, eventValidate } from "../models/events.mjs";
 
 export const addEvent = async (req, res) => {
   try {
-    if (req.files[0]) {
+    if (req.files?.length > 0) {
       const { id } = await upload(req.files[0]);
 
       if (id) {

@@ -397,7 +397,7 @@ export const showSubjectForStudent = asyncHandler(async (req, res) => {
   }
   const test = await Marks.find({
     student_id: req.student_id,
-  }).populate(["subject_id"]);
+  }).populate("subject_id", "name");
 
   return res.json({
     status: true,
