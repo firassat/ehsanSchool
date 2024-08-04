@@ -1,5 +1,11 @@
 import jwt from "jsonwebtoken";
 export const checkUserId = (req, res, next) => {
+  if (!req.headers.authorization) {
+    res.status(500).json({
+      success: false,
+      message: "Error!Token was not provided.",
+    });
+  }
   const token = req.headers.authorization.split(" ")[1];
 
   //Authorization: 'Bearer TOKEN'

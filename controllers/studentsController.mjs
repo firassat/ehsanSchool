@@ -388,6 +388,22 @@ export const showStudentMarks = asyncHandler(async (req, res) => {
     test: test,
   });
 });
+export const showSubjectForStudent = asyncHandler(async (req, res) => {
+  if (!req.student_id) {
+    return res.status(400).json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  const test = await Marks.find({
+    student_id: req.student_id,
+  }).populate(["subject_id"]);
+
+  return res.json({
+    status: true,
+    data: test,
+  });
+});
 
 //web&&mobile
 export const showEvents = asyncHandler(async (req, res) => {

@@ -17,11 +17,11 @@ import {
   showStudentsAndSubjectForClass,
   showStudentsViolation,
   showStudentViolation,
+  showSubjectForStudent,
   studentLogin,
   unRegisterEvent,
 } from "../controllers/studentsController.mjs";
 import { checkStudentId } from "../middleware/checkStudentId.mjs";
-import { checkUserId } from "../middleware/checkUserId.mjs";
 
 export const studentsRoutes = express.Router();
 
@@ -53,6 +53,11 @@ studentsRoutes.post("/addComplaint", checkStudentId, addComplaint);
 studentsRoutes.post("/registerEvent", registerEvent);
 studentsRoutes.post("/unRegisterEvent", unRegisterEvent);
 studentsRoutes.get("/showStudentMarks", checkStudentId, showStudentMarks);
+studentsRoutes.get(
+  "/showSubjectForStudent",
+  checkStudentId,
+  showSubjectForStudent
+);
 
 //web&&mobile
 studentsRoutes.get("/showEvents", showEvents);

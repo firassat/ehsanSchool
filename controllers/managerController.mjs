@@ -35,9 +35,8 @@ export const addEvent = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    if (req.files?.length > 0 ? req.files[0] : false)
-      return res.status(500).json({
-        message: error?.message,
-      });
+    return res.status(500).json({
+      message: error?.message,
+    });
   }
 };
