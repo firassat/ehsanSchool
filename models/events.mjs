@@ -23,6 +23,11 @@ const eventsSchema = new mongoose.Schema({
   description: {
     type: String,
   },
+  admin_added: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
 });
 
 export const events = mongoose.model("events", eventsSchema);

@@ -11,6 +11,7 @@ import {
   showClasses,
   showEvents,
   showStudentAbsence,
+  showStudentMarks,
   showStudentProfile,
   showStudentsAbsence,
   showStudentsAndSubjectForClass,
@@ -24,10 +25,9 @@ import { checkUserId } from "../middleware/checkUserId.mjs";
 
 export const studentsRoutes = express.Router();
 
+//web
 studentsRoutes.post("/addStudent", addStudent);
-
 studentsRoutes.get("/showClasses", showClasses);
-
 studentsRoutes.post("/addStudentAbsence", addStudentAbsence);
 studentsRoutes.post("/addStudentViolation", addStudentViolation);
 studentsRoutes.post("/showStudentsViolation", showStudentsViolation);
@@ -50,9 +50,9 @@ studentsRoutes.get(
 );
 studentsRoutes.get("/showStudentAbsence", checkStudentId, showStudentAbsence);
 studentsRoutes.post("/addComplaint", checkStudentId, addComplaint);
-
 studentsRoutes.post("/registerEvent", registerEvent);
 studentsRoutes.post("/unRegisterEvent", unRegisterEvent);
+studentsRoutes.get("/showStudentMarks", checkStudentId, showStudentMarks);
 
 //web&&mobile
 studentsRoutes.get("/showEvents", showEvents);

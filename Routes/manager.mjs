@@ -19,6 +19,7 @@ import {
 } from "../controllers/userController.mjs";
 import { addEvent } from "../controllers/managerController.mjs";
 import multer from "multer";
+import { checkUserId } from "../middleware/checkUserId.mjs";
 const upload = multer();
 export const manager = express.Router();
 
@@ -38,4 +39,4 @@ manager.post("/addEmpAbs", addEmpAbs);
 manager.post("/addEmpVac", addEmpVac);
 manager.post("/searchEmp", searchEmp);
 
-manager.post("/addEvent", upload.any(), addEvent);
+manager.post("/addEvent", checkUserId, upload.any(), addEvent);

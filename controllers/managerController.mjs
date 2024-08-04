@@ -16,8 +16,17 @@ export const addEvent = async (req, res) => {
         message: error?.message,
       });
     }
+    if (!req.user_id) {
+      return res.status(500).json({
+        message: "حدث خطأ",
+      });
+    }
 
-    const event = new events(req.body);
+    const event = new events({
+      ...req.body,
+      admin_added: req.user_id,
+      number_of_registrants: 0,
+    });
 
     const result = await event.save();
     return res.json({

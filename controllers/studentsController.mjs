@@ -14,8 +14,8 @@ import jwt from "jsonwebtoken";
 import { Complaint, ComplaintValidate } from "../models/Complaint.mjs";
 import { Subject } from "../models/Subjects.mjs";
 import { marksValidate, Marks } from "../models/Marks.mjs";
-//web
 
+//web
 export const showClasses = asyncHandler(async (req, res) => {
   const result = await Classes.find();
   return res.json({ status: true, data: result });
@@ -173,6 +173,7 @@ export const addStudentsMarks = async (req, res) => {
     }
     const type = req.body.type;
     const subject_id = req.body.subject_id;
+    const full_mark = req.body.full_mark;
 
     req.body.students?.map(async (student) => {
       if (!student.id || !student.mark) {
@@ -184,6 +185,7 @@ export const addStudentsMarks = async (req, res) => {
       const mark = await new Marks({
         type,
         subject_id,
+        full_mark,
         student_id: student.id,
         mark: student.mark,
       }).save();
@@ -199,6 +201,7 @@ export const addStudentsMarks = async (req, res) => {
     });
   }
 };
+
 //mobile
 export const studentLogin = asyncHandler(async (req, res) => {
   if (!req.body?.id) {
@@ -263,10 +266,6 @@ export const showStudentAbsence = asyncHandler(async (req, res) => {
     delay: delay,
     absence: absence,
   });
-});
-export const showEvents = asyncHandler(async (req, res) => {
-  const result = await events.find();
-  return res.json({ status: true, data: result });
 });
 export const addComplaint = async (req, res) => {
   try {
@@ -336,4 +335,62 @@ export const unRegisterEvent = asyncHandler(async (req, res) => {
       : 0,
   };
   return res.json({ status: true, data: event2 });
+});
+export const showStudentMarks = asyncHandler(async (req, res) => {
+  if (!req.student_id) {
+    return res.status(400).json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  const test = await Marks.find({
+    student_id: req.student_id,
+    type: "مذاكرة",
+  }).populate(["subject_id"]);
+  const oral = await Marks.find({
+    student_id: req.student_id,
+    type: "شفهي",
+  }).populate(["subject_id"]);
+  const exam = await Marks.find({
+    student_id: req.student_id,
+    type: "امتحان",
+  }).populate(["subject_id"]);
+
+  let full_mark_test = 0;
+  let mark_test = 0;
+  test.map((i) => {
+    full_mark_test += i.full_mark;
+    mark_test += i.mark;
+  });
+  let full_mark_oral = 0;
+  let mark_oral = 0;
+  oral.map((i) => {
+    full_mark_oral += i.full_mark;
+    mark_oral += i.mark;
+  });
+  let full_mark_exam = 0;
+  let mark_exam = 0;
+  exam.map((i) => {
+    full_mark_exam += i.full_mark;
+    mark_exam += i.mark;
+  });
+  const average_test = (mark_test / full_mark_test) * 100;
+  const average_oral = (mark_oral / full_mark_oral) * 100;
+  const average_exam = (mark_exam / full_mark_exam) * 100;
+  return res.json({
+    status: true,
+    average_test,
+    average_oral,
+    average_exam,
+    full_average: (average_test + average_oral + average_exam) / 3,
+    exam: exam,
+    oral: oral,
+    test: test,
+  });
+});
+
+//web&&mobile
+export const showEvents = asyncHandler(async (req, res) => {
+  const result = await events.find().populate("admin_added", "name");
+  return res.json({ status: true, data: result });
 });
