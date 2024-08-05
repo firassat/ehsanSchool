@@ -19,9 +19,45 @@ import { uploadFile } from "../config/uploadFiles.mjs";
 import { deleteFile2 } from "../config/deleteFiles.mjs";
 
 //web
+export const webHomePage = asyncHandler(async (req, res) => {
+  const data = await Students.find({ class_id: req.body.class_id });
+  if (!data) {
+    return res.json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  return res.json({ status: true, data: data });
+});
 export const showClasses = asyncHandler(async (req, res) => {
   const result = await Classes.find();
+  if (!result) {
+    return res.json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
   return res.json({ status: true, data: result });
+});
+export const searchStudent = asyncHandler(async (req, res) => {
+  let data;
+  if (req.body.class_id) {
+    data = await Students.find({
+      full_name: { $regex: req.body.name },
+      class_id: req.body.class_id,
+    });
+  } else {
+    data = await Students.find({
+      full_name: { $regex: req.body.name },
+    });
+  }
+  if (!data) {
+    return res.json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  return res.json({ status: true, data });
 });
 export const addStudent = async (req, res) => {
   try {
@@ -45,6 +81,19 @@ export const addStudent = async (req, res) => {
     });
   }
 };
+export const deleteStudent = asyncHandler(async (req, res) => {
+  const data = await Students.findByIdAndDelete(req.body.id);
+  if (!data) {
+    return res.json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  return res.json({
+    status: true,
+    message: "تم الحذف بنجاح",
+  });
+});
 export const addStudentAbsence = async (req, res) => {
   try {
     const { error } = Student_absenceValidate(req.body);
@@ -94,6 +143,12 @@ export const showStudentsViolation = asyncHandler(async (req, res) => {
     "student_id",
     "full_name"
   );
+  if (!data) {
+    return res.json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
   return res.json({
     status: true,
     data: data,
@@ -127,6 +182,13 @@ export const showStudentsAbsence = asyncHandler(async (req, res) => {
     student_id: req.body.student_id,
     delay_time: { $exists: false },
   });
+
+  if (!delay || !absence) {
+    return res.json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
 
   return res.json({
     status: true,

@@ -7,10 +7,12 @@ import {
   addStudentsMarks,
   addStudentViolation,
   deleteFile,
+  deleteStudent,
   deleteStudentsAbsence,
   deleteStudentViolation,
   homePage,
   registerEvent,
+  searchStudent,
   showClasses,
   showEvents,
   showFiles,
@@ -26,6 +28,7 @@ import {
   showSubjectForStudent,
   studentLogin,
   unRegisterEvent,
+  webHomePage,
 } from "../controllers/studentsController.mjs";
 import { checkStudentId } from "../middleware/checkStudentId.mjs";
 import multer from "multer";
@@ -33,7 +36,11 @@ const upload = multer();
 export const studentsRoutes = express.Router();
 
 //web
+
+studentsRoutes.post("/webHomePage", webHomePage);
 studentsRoutes.post("/addStudent", addStudent);
+studentsRoutes.post("/searchStudent", searchStudent);
+studentsRoutes.post("/deleteStudent", deleteStudent);
 studentsRoutes.get("/showClasses", showClasses);
 studentsRoutes.post("/addStudentAbsence", addStudentAbsence);
 studentsRoutes.post("/addStudentViolation", addStudentViolation);

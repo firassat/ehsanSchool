@@ -17,7 +17,7 @@ import {
   deletePendingAccount,
   showPendingAccounts,
 } from "../controllers/userController.mjs";
-import { addEvent } from "../controllers/managerController.mjs";
+import { addEvent, deleteEvent } from "../controllers/managerController.mjs";
 import { checkUserId } from "../middleware/checkUserId.mjs";
 import multer from "multer";
 const upload = multer();
@@ -40,3 +40,4 @@ manager.post("/addEmpVac", addEmpVac);
 manager.post("/searchEmp", searchEmp);
 
 manager.post("/addEvent", checkUserId, upload.any(), addEvent);
+manager.post("/deleteEvent", deleteEvent);

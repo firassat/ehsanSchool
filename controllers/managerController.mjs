@@ -1,6 +1,6 @@
 import { upload } from "../config/uploadImage.mjs";
 import { events, eventValidate } from "../models/events.mjs";
-
+import asyncHandler from "express-async-handler";
 export const addEvent = async (req, res) => {
   try {
     const { error } = eventValidate(req.body);
@@ -39,3 +39,16 @@ export const addEvent = async (req, res) => {
     });
   }
 };
+export const deleteEvent = asyncHandler(async (req, res) => {
+  const data = await events.findByIdAndDelete(req.body.id);
+  if (!data) {
+    return res.json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  return res.json({
+    status: true,
+    message: "تم الحذف بنجاح",
+  });
+});
