@@ -18,8 +18,8 @@ import {
   showPendingAccounts,
 } from "../controllers/userController.mjs";
 import { addEvent } from "../controllers/managerController.mjs";
-import multer from "multer";
 import { checkUserId } from "../middleware/checkUserId.mjs";
+import multer from "multer";
 const upload = multer();
 export const manager = express.Router();
 

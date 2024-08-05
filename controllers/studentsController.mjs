@@ -12,8 +12,11 @@ import {
 import { events } from "../models/events.mjs";
 import jwt from "jsonwebtoken";
 import { Complaint, ComplaintValidate } from "../models/Complaint.mjs";
-import { Subject } from "../models/Subjects.mjs";
+import { Subjects } from "../models/Subjects.mjs";
 import { marksValidate, Marks } from "../models/Marks.mjs";
+import { Files, FilesValidate } from "../models/Files.mjs";
+import { uploadFile } from "../config/uploadFiles.mjs";
+import { deleteFile2 } from "../config/deleteFiles.mjs";
 
 //web
 export const showClasses = asyncHandler(async (req, res) => {
@@ -154,7 +157,7 @@ export const showStudentsAndSubjectForClass = asyncHandler(async (req, res) => {
   const students = await Students.find({
     class_id: req.body.class_id,
   });
-  const subject = await Subject.find({
+  const subject = await Subjects.find({
     class_id: req.body.class_id,
   });
   return res.json({
@@ -203,6 +206,67 @@ export const addStudentsMarks = async (req, res) => {
     });
   }
 };
+export const addFile = async (req, res) => {
+  try {
+    const { error } = FilesValidate(req.body);
+    if (error) {
+      return res.status(500).json({
+        message: error.message,
+      });
+    }
+    if (req.files?.length > 0) {
+      const { id } = await uploadFile(req.files[0]);
+
+      if (id) {
+        req.body.url = `https://drive.usercontent.google.com/download?id=${id}&export=download`;
+      }
+    }
+    const file = await new Files(req.body).save();
+
+    return res.json({
+      status: true,
+      message: "تم اضافة الملف بنجاح",
+      file,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+export const deleteFile = asyncHandler(async (req, res) => {
+  const data = await Files.findByIdAndDelete(req.body?.id);
+  if (!data) {
+    return res.json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  deleteFile2(data.url?.slice(49, 82));
+
+  return res.json({
+    status: true,
+    message: "تم الحذف بنجاح",
+  });
+});
+export const showFiles = asyncHandler(async (req, res) => {
+  const files = await Files.find({
+    class_id: req.body.class_id,
+  }).populate([
+    { path: "subject_id", select: ["name", "-_id"] },
+    { path: "classes_id", select: ["name", "section", "-_id"] },
+  ]);
+  if (!files) {
+    return res.status(400).json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  return res.json({
+    status: true,
+    data: files,
+  });
+});
 
 //mobile
 export const studentLogin = asyncHandler(async (req, res) => {
@@ -462,6 +526,25 @@ export const showSubjectForStudent = asyncHandler(async (req, res) => {
   return res.json({
     status: true,
     data: test,
+  });
+});
+export const showStudentFiles = asyncHandler(async (req, res) => {
+  if (!req.student_id) {
+    return res.status(400).json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  const classStudent = await Students.findById(req.student_id);
+
+  const data = await Files.find({ classes_id: classStudent.class_id }).populate(
+    "subject_id",
+    ["-_id", "name"]
+  );
+
+  return res.json({
+    status: true,
+    data,
   });
 });
 

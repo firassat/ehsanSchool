@@ -3,13 +3,6 @@ import { events, eventValidate } from "../models/events.mjs";
 
 export const addEvent = async (req, res) => {
   try {
-    if (req.files?.length > 0) {
-      const { id } = await upload(req.files[0]);
-
-      if (id) {
-        req.body.photo = `https://drive.google.com/thumbnail?id=${id}&sz=s100`;
-      }
-    }
     const { error } = eventValidate(req.body);
     if (error) {
       return res.status(500).json({
@@ -21,7 +14,13 @@ export const addEvent = async (req, res) => {
         message: "حدث خطأ",
       });
     }
+    if (req.files?.length > 0) {
+      const { id } = await upload(req.files[0]);
 
+      if (id) {
+        req.body.photo = `https://drive.google.com/thumbnail?id=${id}&sz=s100`;
+      }
+    }
     const event = new events({
       ...req.body,
       admin_added: req.user_id,

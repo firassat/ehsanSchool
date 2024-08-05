@@ -1,17 +1,21 @@
 import express from "express";
 import {
   addComplaint,
+  addFile,
   addStudent,
   addStudentAbsence,
   addStudentsMarks,
   addStudentViolation,
+  deleteFile,
   deleteStudentsAbsence,
   deleteStudentViolation,
   homePage,
   registerEvent,
   showClasses,
   showEvents,
+  showFiles,
   showStudentAbsence,
+  showStudentFiles,
   showStudentMarks,
   showStudentMarks2,
   showStudentProfile,
@@ -24,7 +28,8 @@ import {
   unRegisterEvent,
 } from "../controllers/studentsController.mjs";
 import { checkStudentId } from "../middleware/checkStudentId.mjs";
-
+import multer from "multer";
+const upload = multer();
 export const studentsRoutes = express.Router();
 
 //web
@@ -41,6 +46,9 @@ studentsRoutes.post(
   showStudentsAndSubjectForClass
 );
 studentsRoutes.post("/addStudentsMarks", addStudentsMarks);
+studentsRoutes.post("/addFile", upload.any(), addFile);
+studentsRoutes.post("/deleteFile", deleteFile);
+studentsRoutes.get("/showFiles", showFiles);
 
 //mobile
 studentsRoutes.post("/studentLogin", studentLogin);
@@ -62,6 +70,7 @@ studentsRoutes.get(
   showSubjectForStudent
 );
 studentsRoutes.get("/homePage", checkStudentId, homePage);
+studentsRoutes.get("/showStudentFiles", checkStudentId, showStudentFiles);
 
 //web&&mobile
 studentsRoutes.get("/showEvents", showEvents);
