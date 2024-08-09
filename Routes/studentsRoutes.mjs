@@ -34,16 +34,16 @@ import {
 } from "../controllers/studentsController.mjs";
 import { checkStudentId } from "../middleware/checkStudentId.mjs";
 import multer from "multer";
+import { checkUserId } from "../middleware/checkUserId.mjs";
 const upload = multer();
 export const studentsRoutes = express.Router();
-
 //web
 
 studentsRoutes.post("/webHomePage", webHomePage);
 studentsRoutes.post("/addStudent", addStudent);
 studentsRoutes.post("/searchStudent", searchStudent);
 studentsRoutes.post("/deleteStudent", deleteStudent);
-studentsRoutes.get("/showClasses", showClasses);
+studentsRoutes.get("/showClasses", checkUserId, showClasses);
 studentsRoutes.post("/addStudentAbsence", addStudentAbsence);
 studentsRoutes.post("/addStudentViolation", addStudentViolation);
 studentsRoutes.post("/showStudentsViolation", showStudentsViolation);

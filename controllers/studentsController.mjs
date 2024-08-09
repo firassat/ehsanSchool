@@ -32,7 +32,7 @@ export const webHomePage = asyncHandler(async (req, res) => {
   return res.json({ status: true, data: data });
 });
 export const showClasses = asyncHandler(async (req, res) => {
-  const result = await Classes.find();
+  const result = await Classes.find({ admin: req.user_id });
   if (!result) {
     return res.json({
       status: false,
