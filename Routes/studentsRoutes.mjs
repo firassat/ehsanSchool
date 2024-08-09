@@ -17,6 +17,7 @@ import {
   showEvents,
   showFiles,
   showStudentAbsence,
+  showStudentExamSchedule,
   showStudentFiles,
   showStudentMarks,
   showStudentMarks2,
@@ -25,6 +26,7 @@ import {
   showStudentsAndSubjectForClass,
   showStudentsViolation,
   showStudentViolation,
+  showStudentWeekSchedule,
   showSubjectForStudent,
   studentLogin,
   unRegisterEvent,
@@ -78,6 +80,16 @@ studentsRoutes.get(
 );
 studentsRoutes.get("/homePage", checkStudentId, homePage);
 studentsRoutes.get("/showStudentFiles", checkStudentId, showStudentFiles);
+studentsRoutes.get(
+  "/showStudentWeekSchedule",
+  checkStudentId,
+  showStudentWeekSchedule
+);
+studentsRoutes.get(
+  "/showStudentExamSchedule",
+  checkStudentId,
+  showStudentExamSchedule
+);
 
 //web&&mobile
 studentsRoutes.get("/showEvents", showEvents);

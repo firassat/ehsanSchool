@@ -155,7 +155,7 @@ export function validatEmployees(obj) {
     mobile_num: Joi.string(),
     tele_num: Joi.string(),
     military_rank: Joi.string(),
-    subject: Joi.string().required(),
+    subject: Joi.string(),
     school: Joi.string(),
   })
     .unknown()

@@ -17,6 +17,8 @@ import { marksValidate, Marks } from "../models/Marks.mjs";
 import { Files, FilesValidate } from "../models/Files.mjs";
 import { uploadFile } from "../config/uploadFiles.mjs";
 import { deleteFile2 } from "../config/deleteFiles.mjs";
+import { WeekSchedule } from "../models/WeekSchedule.mjs";
+import { ExamSchedule } from "../models/ExamSchedule.mjs";
 
 //web
 export const webHomePage = asyncHandler(async (req, res) => {
@@ -590,6 +592,32 @@ export const showSubjectForStudent = asyncHandler(async (req, res) => {
     data: test,
   });
 });
+export const showStudentWeekSchedule = asyncHandler(async (req, res) => {
+  if (!req.student_id) {
+    return res.status(400).json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  const classStudent = await Students.findById(req.student_id);
+
+  const result = await WeekSchedule.find({
+    class_id: classStudent.class_id,
+  });
+  const son = result.filter((i) => i.day === "الاحد");
+  const mun = result.filter((i) => i.day === "الاثنين");
+  const the = result.filter((i) => i.day === "الثلاثاء");
+  const wen = result.filter((i) => i.day === "الاربعاء");
+  const tus = result.filter((i) => i.day === "الخميس");
+  return res.json({
+    status: true,
+    son,
+    mun,
+    the,
+    wen,
+    tus,
+  });
+});
 export const showStudentFiles = asyncHandler(async (req, res) => {
   if (!req.student_id) {
     return res.status(400).json({
@@ -604,6 +632,31 @@ export const showStudentFiles = asyncHandler(async (req, res) => {
     ["-_id", "name"]
   );
 
+  return res.json({
+    status: true,
+    data,
+  });
+});
+export const showStudentExamSchedule = asyncHandler(async (req, res) => {
+  if (!req.student_id) {
+    return res.status(400).json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  const classStudent = await Students.findById(req.student_id).populate(
+    "class_id"
+  );
+
+  const data = await ExamSchedule.find({
+    class: classStudent?.class_id?.name,
+  });
+  if (!data) {
+    return res.status(400).json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
   return res.json({
     status: true,
     data,

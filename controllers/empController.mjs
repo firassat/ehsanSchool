@@ -59,6 +59,9 @@ export const addEmp = async (req, res) => {
 
 export const showEmps = async (req, res) => {
   const result = await employees.find();
+  if (!result) {
+    return res.status(500).json({ message: "حدث خطأ ما" });
+  }
   return res.json({ status: true, data: result });
 };
 
@@ -202,6 +205,7 @@ export const showEmpData = async (req, res) => {
   const administrative_vacation1 = await administrative_vacation.find({
     emp_id: req.params.id,
   });
+
   return res.json({
     status: true,
     emp_qualifications: emp_qualifications1,
