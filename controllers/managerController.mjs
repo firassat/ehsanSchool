@@ -1,6 +1,9 @@
 import { upload } from "../config/uploadImage.mjs";
+import { Classes } from "../models/Classes.mjs";
 import { events, eventValidate } from "../models/events.mjs";
 import asyncHandler from "express-async-handler";
+import { User } from "../models/User.mjs";
+
 export const addEvent = async (req, res) => {
   try {
     const { error } = eventValidate(req.body);
@@ -47,6 +50,62 @@ export const deleteEvent = asyncHandler(async (req, res) => {
       message: "حدث خطأ ما",
     });
   }
+  return res.json({
+    status: true,
+    message: "تم الحذف بنجاح",
+  });
+});
+
+export const addAdminForClass = asyncHandler(async (req, res) => {
+  if (!req.body.class_id || !req.body.admin_id) {
+    return res.status(500).json({
+      message: "حدث خطأ",
+    });
+  }
+  const data = await Classes.findByIdAndUpdate(req.body?.class_id, {
+    $set: { admin: req.body.admin_id },
+  });
+  return res.json({
+    status: true,
+    data,
+  });
+});
+export const showAdminForClasses = asyncHandler(async (req, res) => {
+  const users = (await User.find().populate("role_id")).filter(
+    (i) => i.role_id.name === "موجه"
+  );
+
+  let data = [];
+  await Promise.all(
+    users.map(async (i) => {
+      let da = await Classes.find({ admin: i._id });
+      data.push({ admin: i, classes: da });
+    })
+  );
+  return res.json({
+    status: true,
+    data,
+  });
+});
+export const showClassesWithOutAdmin = asyncHandler(async (req, res) => {
+  let data = await Classes.find({ admin: { $exists: false } });
+
+  return res.json({
+    status: true,
+    data,
+  });
+});
+export const deleteAdminForClass = asyncHandler(async (req, res) => {
+  const data = await Classes.findByIdAndUpdate(req.body?.id, {
+    $unset: { admin: "" },
+  });
+  if (!data) {
+    return res.json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+
   return res.json({
     status: true,
     message: "تم الحذف بنجاح",

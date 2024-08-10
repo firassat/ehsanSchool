@@ -333,14 +333,9 @@ export const showFiles = asyncHandler(async (req, res) => {
   });
 });
 export const showComplaint = asyncHandler(async (req, res) => {
-  const result = await Classes.find({ admin: req.user_id });
-  const stu = await Students.find({
-    class_id: { $in: result.map((i) => i.id) },
-  });
-
-  const files = await Complaint.find({
-    student_id: { $in: stu.map((i) => i.id) },
-  }).populate("student_id", "full_name");
+  const files = await Complaint.find()
+    .populate("student_id", "full_name")
+    .sort({ createdAt: -1 });
   if (!files) {
     return res.status(400).json({
       status: false,

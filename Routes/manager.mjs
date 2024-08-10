@@ -17,7 +17,14 @@ import {
   deletePendingAccount,
   showPendingAccounts,
 } from "../controllers/userController.mjs";
-import { addEvent, deleteEvent } from "../controllers/managerController.mjs";
+import {
+  addAdminForClass,
+  addEvent,
+  deleteAdminForClass,
+  deleteEvent,
+  showAdminForClasses,
+  showClassesWithOutAdmin,
+} from "../controllers/managerController.mjs";
 import { checkUserId } from "../middleware/checkUserId.mjs";
 import multer from "multer";
 const upload = multer();
@@ -41,3 +48,8 @@ manager.post("/searchEmp", searchEmp);
 
 manager.post("/addEvent", checkUserId, upload.any(), addEvent);
 manager.post("/deleteEvent", deleteEvent);
+
+manager.get("/showAdminForClasses", showAdminForClasses);
+manager.get("/showClassesWithOutAdmin", showClassesWithOutAdmin);
+manager.post("/deleteAdminForClass", deleteAdminForClass);
+manager.post("/addAdminForClass", addAdminForClass);

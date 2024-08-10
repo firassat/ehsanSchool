@@ -59,7 +59,7 @@ studentsRoutes.post("/addStudentsMarks", addStudentsMarks);
 studentsRoutes.post("/addFile", upload.any(), addFile);
 studentsRoutes.post("/deleteFile", deleteFile);
 studentsRoutes.get("/showFiles", checkUserId, showFiles);
-studentsRoutes.get("/showComplaint", checkUserId, showComplaint);
+studentsRoutes.get("/showComplaint", showComplaint);
 
 //mobile
 studentsRoutes.post("/studentLogin", studentLogin);
