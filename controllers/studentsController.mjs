@@ -19,6 +19,7 @@ import { uploadFile } from "../config/uploadFiles.mjs";
 import { deleteFile2 } from "../config/deleteFiles.mjs";
 import { WeekSchedule } from "../models/WeekSchedule.mjs";
 import { ExamSchedule } from "../models/ExamSchedule.mjs";
+import { Rol } from "../models/Rol.mjs";
 
 //web
 export const webHomePage = asyncHandler(async (req, res) => {
@@ -32,14 +33,93 @@ export const webHomePage = asyncHandler(async (req, res) => {
   return res.json({ status: true, data: data });
 });
 export const showClasses = asyncHandler(async (req, res) => {
-  const result = await Classes.find({ admin: req.user_id });
-  if (!result) {
+  const role = await Rol.findById(req.role_id);
+  if (role.name === "موجه") {
+    const result = await Classes.find({ admin: req.user_id });
+    if (!result) {
+      return res.json({
+        status: false,
+        message: "حدث خطأ ما",
+      });
+    }
+    return res.json({ status: true, data: result });
+  } else {
+    const result = await Classes.find();
+    if (!result) {
+      return res.json({
+        status: false,
+        message: "حدث خطأ ما",
+      });
+    }
+    return res.json({ status: true, data: result });
+  }
+});
+export const showStudentInfo = asyncHandler(async (req, res) => {
+  const student = await Students.findById(req.body.id).populate("class_id");
+  const violation = await Student_violation.find({ student_id: req.body.id });
+  const delay = await Student_absence.find({
+    student_id: req.body.id,
+    delay_time: { $exists: true },
+  });
+  const absence = await Student_absence.find({
+    student_id: req.body.id,
+    delay_time: { $exists: false },
+  });
+  const test = await Marks.find({
+    student_id: req.body.id,
+    type: "مذاكرة",
+  }).populate(["subject_id"]);
+  const oral = await Marks.find({
+    student_id: req.body.id,
+    type: "شفهي",
+  }).populate(["subject_id"]);
+  const exam = await Marks.find({
+    student_id: req.body.id,
+    type: "امتحان",
+  }).populate(["subject_id"]);
+
+  let full_mark_test = 0;
+  let mark_test = 0;
+  test.map((i) => {
+    full_mark_test += i.full_mark;
+    mark_test += i.mark;
+  });
+  let full_mark_oral = 0;
+  let mark_oral = 0;
+  oral.map((i) => {
+    full_mark_oral += i.full_mark;
+    mark_oral += i.mark;
+  });
+  let full_mark_exam = 0;
+  let mark_exam = 0;
+  exam.map((i) => {
+    full_mark_exam += i.full_mark;
+    mark_exam += i.mark;
+  });
+  const average_test = (mark_test / full_mark_test) * 100;
+  const average_oral = (mark_oral / full_mark_oral) * 100;
+  const average_exam = (mark_exam / full_mark_exam) * 100;
+  if (!student) {
     return res.json({
       status: false,
       message: "حدث خطأ ما",
     });
   }
-  return res.json({ status: true, data: result });
+
+  return res.json({
+    status: true,
+    student,
+    violation,
+    delay,
+    absence,
+    average_test,
+    average_oral,
+    average_exam,
+    full_average: (average_test + average_oral + average_exam) / 3,
+    exam: exam,
+    oral: oral,
+    test: test,
+  });
 });
 export const searchStudent = asyncHandler(async (req, res) => {
   let data;
@@ -60,6 +140,36 @@ export const searchStudent = asyncHandler(async (req, res) => {
     });
   }
   return res.json({ status: true, data });
+});
+export const addClass = async (req, res) => {
+  try {
+    if (!req.body.name || !req.body.section) {
+      return res.status(400).json({
+        status: false,
+        message: "حدث خطأ ما",
+      });
+    }
+
+    const student = new Classes(req.body);
+    const result = await student.save();
+    return res.json({
+      status: true,
+      message: "تم اضافة الصف بنجاح",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+export const deleteClass = asyncHandler(async (req, res) => {
+  const data = await Classes.findByIdAndDelete(req.body.id);
+
+  return res.json({
+    status: true,
+    message: "تم الحذف بنجاح",
+  });
 });
 export const addStudent = async (req, res) => {
   try {

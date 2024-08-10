@@ -1,11 +1,13 @@
 import express from "express";
 import {
+  addClass,
   addComplaint,
   addFile,
   addStudent,
   addStudentAbsence,
   addStudentsMarks,
   addStudentViolation,
+  deleteClass,
   deleteFile,
   deleteStudent,
   deleteStudentsAbsence,
@@ -20,6 +22,7 @@ import {
   showStudentAbsence,
   showStudentExamSchedule,
   showStudentFiles,
+  showStudentInfo,
   showStudentMarks,
   showStudentMarks2,
   showStudentProfile,
@@ -44,7 +47,10 @@ studentsRoutes.post("/webHomePage", webHomePage);
 studentsRoutes.post("/addStudent", addStudent);
 studentsRoutes.post("/searchStudent", searchStudent);
 studentsRoutes.post("/deleteStudent", deleteStudent);
+studentsRoutes.post("/showStudentInfo", showStudentInfo);
 studentsRoutes.get("/showClasses", checkUserId, showClasses);
+studentsRoutes.post("/addClass", addClass);
+studentsRoutes.post("/deleteClass", deleteClass);
 studentsRoutes.post("/addStudentAbsence", addStudentAbsence);
 studentsRoutes.post("/addStudentViolation", addStudentViolation);
 studentsRoutes.post("/showStudentsViolation", showStudentsViolation);
