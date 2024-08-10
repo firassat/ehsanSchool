@@ -338,7 +338,9 @@ export const showComplaint = asyncHandler(async (req, res) => {
     class_id: { $in: result.map((i) => i.id) },
   });
 
-  const files = await Complaint.find({});
+  const files = await Complaint.find({
+    student_id: { $in: stu.map((i) => i.id) },
+  }).populate("student_id", "full_name");
   if (!files) {
     return res.status(400).json({
       status: false,
