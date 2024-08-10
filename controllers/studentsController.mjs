@@ -314,12 +314,31 @@ export const deleteFile = asyncHandler(async (req, res) => {
   });
 });
 export const showFiles = asyncHandler(async (req, res) => {
+  const result = await Classes.find({ admin: req.user_id });
   const files = await Files.find({
-    class_id: req.body.class_id,
+    classes_id: { $in: result.map((i) => i.id) },
   }).populate([
     { path: "subject_id", select: ["name", "-_id"] },
     { path: "classes_id", select: ["name", "section", "-_id"] },
   ]);
+  if (!files) {
+    return res.status(400).json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  return res.json({
+    status: true,
+    data: files,
+  });
+});
+export const showComplaint = asyncHandler(async (req, res) => {
+  const result = await Classes.find({ admin: req.user_id });
+  const stu = await Students.find({
+    class_id: { $in: result.map((i) => i.id) },
+  });
+
+  const files = await Complaint.find({});
   if (!files) {
     return res.status(400).json({
       status: false,

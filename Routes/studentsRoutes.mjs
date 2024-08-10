@@ -14,6 +14,7 @@ import {
   registerEvent,
   searchStudent,
   showClasses,
+  showComplaint,
   showEvents,
   showFiles,
   showStudentAbsence,
@@ -57,7 +58,8 @@ studentsRoutes.post(
 studentsRoutes.post("/addStudentsMarks", addStudentsMarks);
 studentsRoutes.post("/addFile", upload.any(), addFile);
 studentsRoutes.post("/deleteFile", deleteFile);
-studentsRoutes.get("/showFiles", showFiles);
+studentsRoutes.get("/showFiles", checkUserId, showFiles);
+studentsRoutes.get("/showComplaint", checkUserId, showComplaint);
 
 //mobile
 studentsRoutes.post("/studentLogin", studentLogin);
