@@ -127,11 +127,11 @@ export const searchStudent = asyncHandler(async (req, res) => {
     data = await Students.find({
       full_name: { $regex: req.body.name },
       class_id: req.body.class_id,
-    });
+    }).populate("class_id");
   } else {
     data = await Students.find({
       full_name: { $regex: req.body.name },
-    });
+    }).populate("class_id");
   }
   if (!data) {
     return res.json({

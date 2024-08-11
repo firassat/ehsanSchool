@@ -6,10 +6,6 @@ const teaching_requestsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    request_type_id: {
-      type: Number,
-      required: true,
-    },
     birth_date: {
       type: Date,
       required: true,
@@ -49,11 +45,6 @@ const teaching_requestsSchema = new mongoose.Schema(
     rating: {
       type: Number,
     },
-    request_type_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      default: "663d21d4977d6f592c1c6124",
-      ref: "request_type",
-    },
     nationality_id: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -81,7 +72,6 @@ export const teaching_requests = mongoose.model(
 export function validateTeachingRequests(obj) {
   const schema = Joi.object({
     name: Joi.string().required(),
-    request_type_id: Joi.string(),
     birth_date: Joi.required(),
     birth_city: Joi.string().required(),
     academic_qualification: Joi.string().required(),
