@@ -20,6 +20,7 @@ import { deleteFile2 } from "../config/deleteFiles.mjs";
 import { WeekSchedule } from "../models/WeekSchedule.mjs";
 import { ExamSchedule } from "../models/ExamSchedule.mjs";
 import { Rol } from "../models/Rol.mjs";
+import moment from "moment";
 
 //web
 export const webHomePage = asyncHandler(async (req, res) => {
@@ -600,24 +601,50 @@ export const showStudentMarks2 = asyncHandler(async (req, res) => {
     });
   }
 
-  const test = await Marks.find({
+  const sub = await Marks.find({
     student_id: req.student_id,
     subject_id: req.params.id,
   }).populate(["subject_id"]);
 
-  let full_mark = 0;
-  let mark = 0;
-  test.map((i) => {
-    full_mark += i.full_mark;
-    mark += i.mark;
-  });
+  const test = sub.filter((i) => i.type === "مذاكرة");
+  const oral = sub.filter((i) => i.type === "شفهي");
+  const exam = sub.filter((i) => i.type === "مذاكرة");
 
-  const average = (mark / full_mark) * 100;
+  let full_mark_test = 0;
+  let mark_test = 0;
+  test.map((i) => {
+    full_mark_test += i.full_mark;
+    mark_test += i.mark;
+  });
+  let full_mark_oral = 0;
+  let mark_oral = 0;
+  oral.map((i) => {
+    full_mark_oral += i.full_mark;
+    mark_oral += i.mark;
+  });
+  let full_mark_exam = 0;
+  let mark_exam = 0;
+  exam.map((i) => {
+    full_mark_exam += i.full_mark;
+    mark_exam += i.mark;
+  });
+  const average_test = (mark_test / full_mark_test) * 100;
+  const average_oral = (mark_oral / full_mark_oral) * 100;
+  const average_exam = (mark_exam / full_mark_exam) * 100;
 
   return res.json({
     status: true,
-    average,
-    data: test,
+    average: (average_test + average_oral + average_exam) / 3,
+    data: sub,
+    average_test,
+    average_oral,
+    average_exam,
+    full_mark_test,
+    mark_test,
+    full_mark_oral,
+    mark_oral,
+    full_mark_exam,
+    mark_exam,
   });
 });
 export const showStudentMarks = asyncHandler(async (req, res) => {
@@ -671,6 +698,12 @@ export const showStudentMarks = asyncHandler(async (req, res) => {
     exam: exam,
     oral: oral,
     test: test,
+    full_mark_test,
+    mark_test,
+    full_mark_oral,
+    mark_oral,
+    full_mark_exam,
+    mark_exam,
   });
 });
 export const homePage = asyncHandler(async (req, res) => {
@@ -713,9 +746,11 @@ export const showSubjectForStudent = asyncHandler(async (req, res) => {
     student_id: req.student_id,
   }).populate("subject_id", "name");
 
+  const te = test.map((i) => i.subject_id.name);
+  const data = [...new Set(te)];
   return res.json({
     status: true,
-    data: test,
+    data,
   });
 });
 export const showStudentWeekSchedule = asyncHandler(async (req, res) => {
@@ -729,12 +764,60 @@ export const showStudentWeekSchedule = asyncHandler(async (req, res) => {
 
   const result = await WeekSchedule.find({
     class_id: classStudent.class_id,
-  });
+  }).lean();
   const son = result.filter((i) => i.day === "الاحد");
   const mun = result.filter((i) => i.day === "الاثنين");
   const the = result.filter((i) => i.day === "الثلاثاء");
   const wen = result.filter((i) => i.day === "الاربعاء");
   const tus = result.filter((i) => i.day === "الخميس");
+  const arr = [son, mun, the, wen, tus];
+  arr.map((d) => {
+    d.map((i) => {
+      if (i.order === 1) {
+        i.from = "08:00";
+        i.to = "08:45";
+      }
+      if (i.order === 2) {
+        i.from = "08:45";
+        i.to = "09:30";
+      }
+      if (i.order === 3) {
+        i.from = "09:30";
+        i.to = "10:15";
+        d.push({
+          _id: "1",
+          name: "استراحة",
+          __v: 0,
+          from: "10:15",
+          to: "10:30",
+        });
+      }
+      if (i.order === 4) {
+        i.from = "10:30";
+        i.to = "11:15";
+      }
+      if (i.order === 5) {
+        i.from = "11:15";
+        i.to = "12:00";
+        son.push({
+          _id: "2",
+          name: "استراحة",
+          __v: 0,
+          from: "12:15",
+          to: "12:30",
+        });
+      }
+      if (i.order === 6) {
+        i.from = "12:15";
+        i.to = "01:00";
+      }
+      if (i.order === 6) {
+        i.from = "01:00";
+        i.to = "01:45";
+      }
+    });
+  });
+
   return res.json({
     status: true,
     son,
@@ -776,6 +859,11 @@ export const showStudentExamSchedule = asyncHandler(async (req, res) => {
 
   const data = await ExamSchedule.find({
     class: classStudent?.class_id?.name,
+  }).lean();
+  data.map((i) => {
+    const date = moment(i?.date).locale("ar");
+    i.date = date.format("ll");
+    i.day = date.format("dddd");
   });
   if (!data) {
     return res.status(400).json({

@@ -6,6 +6,9 @@ const Student_violationSchema = new mongoose.Schema(
     description: {
       type: String,
     },
+    date: {
+      type: String,
+    },
 
     student_id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -23,6 +26,7 @@ export const Student_violation = mongoose.model(
 
 export function Student_violationValidate(obj) {
   const schema = Joi.object({
+    date: Joi.string().required(),
     delay_time: Joi.string(),
     student_id: Joi.string().required(),
   })

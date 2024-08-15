@@ -6,6 +6,9 @@ const Student_absenceSchema = new mongoose.Schema(
     delay_time: {
       type: String,
     },
+    date: {
+      type: String,
+    },
     student_id: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -22,6 +25,7 @@ export const Student_absence = mongoose.model(
 
 export function Student_absenceValidate(obj) {
   const schema = Joi.object({
+    date: Joi.string().required(),
     delay_time: Joi.string(),
     student_id: Joi.string().required(),
   })
