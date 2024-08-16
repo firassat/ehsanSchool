@@ -7,7 +7,7 @@ const MarksSchema = new mongoose.Schema(
       required: true,
     },
     date: {
-      type: Number,
+      type: String,
       required: true,
     },
     full_mark: {

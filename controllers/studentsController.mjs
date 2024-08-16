@@ -852,7 +852,7 @@ export const showSubjectForStudent = asyncHandler(async (req, res) => {
     student_id: req.student_id,
   }).populate("subject_id", "name");
 
-  const te = test.map((i) => i.subject_id);
+  const te = test.map((i) => i.subject_id).filter((i) => i !== null);
   const data = [...new Set(te)];
   return res.json({
     status: true,
