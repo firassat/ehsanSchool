@@ -714,7 +714,7 @@ export const showStudentMarks2 = asyncHandler(async (req, res) => {
 
   const test = sub.filter((i) => i.type === "مذاكرة");
   const oral = sub.filter((i) => i.type === "شفهي");
-  const exam = sub.filter((i) => i.type === "مذاكرة");
+  const exam = sub.filter((i) => i.type === "امتحان");
 
   let full_mark_test = 0;
   let mark_test = 0;
@@ -734,13 +734,23 @@ export const showStudentMarks2 = asyncHandler(async (req, res) => {
     full_mark_exam += i.full_mark;
     mark_exam += i.mark;
   });
-  const average_test = (mark_test / full_mark_test) * 100;
-  const average_oral = (mark_oral / full_mark_oral) * 100;
-  const average_exam = (mark_exam / full_mark_exam) * 100;
-
+  const average_test =
+    full_mark_test > 0 ? (mark_test / full_mark_test) * 100 : 0;
+  const average_oral =
+    full_mark_oral > 0 ? (mark_oral / full_mark_oral) * 100 : 0;
+  const average_exam =
+    full_mark_exam > 0 ? (mark_exam / full_mark_exam) * 100 : 0;
+  let av = 3;
+  average_test === 0 ? av-- : null;
+  average_oral === 0 ? av-- : null;
+  average_exam === 0 ? av-- : null;
   return res.json({
     status: true,
-    average: (average_test + average_oral + average_exam) / 3,
+    average:
+      ((average_test > 0 ? average_test : 0) +
+        (average_oral > 0 ? average_oral : 0) +
+        (average_exam > 0 ? average_exam : 0)) /
+      av,
     data: sub,
     average_test,
     average_oral,
@@ -792,15 +802,27 @@ export const showStudentMarks = asyncHandler(async (req, res) => {
     full_mark_exam += i.full_mark;
     mark_exam += i.mark;
   });
-  const average_test = (mark_test / full_mark_test) * 100;
-  const average_oral = (mark_oral / full_mark_oral) * 100;
-  const average_exam = (mark_exam / full_mark_exam) * 100;
+  const average_test =
+    full_mark_test > 0 ? (mark_test / full_mark_test) * 100 : 0;
+  const average_oral =
+    full_mark_oral > 0 ? (mark_oral / full_mark_oral) * 100 : 0;
+  const average_exam =
+    full_mark_exam > 0 ? (mark_exam / full_mark_exam) * 100 : 0;
+  let av = 3;
+  average_test === 0 ? av-- : null;
+  average_oral === 0 ? av-- : null;
+  average_exam === 0 ? av-- : null;
+
   return res.json({
     status: true,
     average_test,
     average_oral,
     average_exam,
-    full_average: (average_test + average_oral + average_exam) / 3,
+    full_average:
+      ((average_test > 0 ? average_test : 0) +
+        (average_oral > 0 ? average_oral : 0) +
+        (average_exam > 0 ? average_exam : 0)) /
+      av,
     exam: exam,
     oral: oral,
     test: test,
