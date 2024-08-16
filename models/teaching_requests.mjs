@@ -42,6 +42,14 @@ const teaching_requestsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    approve: {
+      type: Boolean,
+      default: false,
+    },
+    adminNote: {
+      type: String,
+      default: "لا يوجد",
+    },
     rating: {
       type: Number,
     },

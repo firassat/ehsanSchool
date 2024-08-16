@@ -20,6 +20,8 @@ import {
 import {
   addAdminForClass,
   addEvent,
+  approveEmbRequest,
+  approveTeachRequest,
   deleteAdminForClass,
   deleteEvent,
   showAdminForClasses,
@@ -53,3 +55,6 @@ manager.get("/showAdminForClasses", showAdminForClasses);
 manager.get("/showClassesWithOutAdmin", showClassesWithOutAdmin);
 manager.post("/deleteAdminForClass", deleteAdminForClass);
 manager.post("/addAdminForClass", addAdminForClass);
+
+manager.post("/approveTeachRequest", approveTeachRequest);
+manager.post("/approveEmbRequest", approveEmbRequest);

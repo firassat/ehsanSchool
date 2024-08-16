@@ -461,27 +461,62 @@ export const showComplaint = asyncHandler(async (req, res) => {
 
 //mobile
 export const studentLogin = asyncHandler(async (req, res) => {
+  let year;
+  if (moment().format("MM") <= 8) {
+    year = `${moment().subtract(1, "years").format("YYYY")}-${moment().format(
+      "YYYY"
+    )}`;
+  }
+  if (moment().format("MM") > 8) {
+    year = `${moment().format("YYYY")}-${moment()
+      .add(1, "years")
+      .format("YYYY")}`;
+  }
   if (!req.body?.id) {
     return res.json({ message: "ادخل الرمز" });
   }
-  let student = await Students.findById(req.body.id).populate(["class_id"]);
+  let student = await Students.findById(req.body.id)
+    .populate(["class_id"])
+    .lean();
+  student.year = year;
   if (!student) return res.json({ message: "الرمز غير صحيح" });
   const name1 = student?.full_name;
   const name2 = req.body?.full_name;
   if (name1 !== name2) {
     return res.json({ message: "الاسم غير صحيح" });
   }
-  const access_token = jwt.sign({ id: student.id }, process.env.SECRTKEY);
+  const access_token = jwt.sign({ id: student._id }, process.env.SECRTKEY);
   return res.json({ data: student, token: access_token });
 });
 export const showStudentProfile = asyncHandler(async (req, res) => {
+  let year;
+  if (moment().format("MM") <= 8) {
+    year = `${moment().subtract(1, "years").format("YYYY")}-${moment().format(
+      "YYYY"
+    )}`;
+  }
+  if (moment().format("MM") > 8) {
+    year = `${moment().format("YYYY")}-${moment()
+      .add(1, "years")
+      .format("YYYY")}`;
+  }
   if (!req.student_id) {
     return res.status(400).json({
       status: false,
       message: "حدث خطأ ما",
     });
   }
-  const data = await Students.findById(req.student_id).populate(["class_id"]);
+  const data = await Students.findById(req.student_id)
+    .populate(["class_id"])
+    .lean();
+  if (!data) {
+    return res.status(400).json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  data.year = year;
+
   return res.json({
     status: true,
     data: data,

@@ -50,6 +50,14 @@ const emp_requestsSchema = new mongoose.Schema(
     rating: {
       type: Number,
     },
+    approve: {
+      type: Boolean,
+      default: false,
+    },
+    adminNote: {
+      type: String,
+      default: "لا يوجد",
+    },
     request_type_id: {
       type: mongoose.Schema.Types.ObjectId,
 

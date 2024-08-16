@@ -3,6 +3,8 @@ import { Classes } from "../models/Classes.mjs";
 import { events, eventValidate } from "../models/events.mjs";
 import asyncHandler from "express-async-handler";
 import { User } from "../models/User.mjs";
+import { teaching_requests } from "../models/teaching_requests.mjs";
+import { emp_requests } from "../models/emp_requests.mjs";
 
 export const addEvent = async (req, res) => {
   try {
@@ -110,4 +112,23 @@ export const deleteAdminForClass = asyncHandler(async (req, res) => {
     status: true,
     message: "تم الحذف بنجاح",
   });
+});
+
+export const approveTeachRequest = asyncHandler(async (req, res) => {
+  const result = await teaching_requests.findByIdAndUpdate(req.body.id, {
+    $set: {
+      approve: true,
+      adminNote: req.body.note,
+    },
+  });
+  return res.json({ status: true, message: "تم التعديل" });
+});
+export const approveEmbRequest = asyncHandler(async (req, res) => {
+  const result = await emp_requests.findByIdAndUpdate(req.body.id, {
+    $set: {
+      approve: true,
+      adminNote: req.body.note,
+    },
+  });
+  return res.json({ status: true, message: "تم التعديل" });
 });
