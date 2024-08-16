@@ -458,6 +458,77 @@ export const showComplaint = asyncHandler(async (req, res) => {
     data: files,
   });
 });
+export const promotion = asyncHandler(async (req, res) => {
+  const student = await Students.find({ class_id: req.params.id }).populate(
+    "class_id"
+  );
+  if (!student) {
+    return res.status(400).json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  let studentsPromotion = [];
+  await Promise.all(
+    student.map(async (i) => {
+      const mark = await Marks.find({ student_id: i._id });
+
+      const test = mark.filter((i) => i.type === "مذاكرة");
+      const oral = mark.filter((i) => i.type === "شفهي");
+      const exam = mark.filter((i) => i.type === "امتحان");
+
+      let full_mark_test = 0;
+      let mark_test = 0;
+      test.map((i) => {
+        full_mark_test += i.full_mark;
+        mark_test += i.mark;
+      });
+      let full_mark_oral = 0;
+      let mark_oral = 0;
+      oral.map((i) => {
+        full_mark_oral += i.full_mark;
+        mark_oral += i.mark;
+      });
+      let full_mark_exam = 0;
+      let mark_exam = 0;
+      exam.map((i) => {
+        full_mark_exam += i.full_mark;
+        mark_exam += i.mark;
+      });
+      const average_test = (mark_test / full_mark_test) * 100;
+      const average_oral = (mark_oral / full_mark_oral) * 100;
+      const average_exam = (mark_exam / full_mark_exam) * 100;
+      if (average_exam > 40 && average_oral > 40 && average_test > 40) {
+        const classes = [
+          "السابع",
+          "الثامن",
+          "التاسع",
+          "العاشر",
+          "الحادي عشر",
+          "البكالوريا",
+        ];
+        await Promise.all(
+          classes.map(async (c, index) => {
+            if (i.class_id.name === c) {
+              const id = await Classes.find({
+                name: classes[index + 1],
+                section: i.class_id.section,
+              });
+              const student = await Students.findByIdAndUpdate(i.id, {
+                $set: { class_id: id[0].id },
+              });
+              studentsPromotion.push(student);
+            }
+          })
+        );
+      }
+    })
+  );
+  return res.json({
+    status: true,
+    studentsPromotion,
+  });
+});
 
 //mobile
 export const studentLogin = asyncHandler(async (req, res) => {
@@ -781,7 +852,7 @@ export const showSubjectForStudent = asyncHandler(async (req, res) => {
     student_id: req.student_id,
   }).populate("subject_id", "name");
 
-  const te = test.map((i) => i.subject_id.name);
+  const te = test.map((i) => i.subject_id);
   const data = [...new Set(te)];
   return res.json({
     status: true,

@@ -13,6 +13,7 @@ import {
   deleteStudentsAbsence,
   deleteStudentViolation,
   homePage,
+  promotion,
   registerEvent,
   searchStudent,
   showClasses,
@@ -66,6 +67,7 @@ studentsRoutes.post("/addFile", upload.any(), addFile);
 studentsRoutes.post("/deleteFile", deleteFile);
 studentsRoutes.get("/showFiles", checkUserId, showFiles);
 studentsRoutes.get("/showComplaint", showComplaint);
+studentsRoutes.get("/promotion/:id", promotion);
 
 //mobile
 studentsRoutes.post("/studentLogin", studentLogin);
