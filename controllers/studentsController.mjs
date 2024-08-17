@@ -1028,15 +1028,9 @@ export const showStudentExamSchedule = asyncHandler(async (req, res) => {
   });
 });
 export const testNotification = asyncHandler(async (req, res, next) => {
-  notification(
-    req,
-    res,
-    next,
-    req.body.message,
-    req.body.title,
-    req.body.token
-  );
-  return res;
+  const tokens = [req.body.token];
+  notification(req, res, next, req.body.message, req.body.title, tokens);
+  return res.json({ message: "تم ارسال الاشعار" });
 });
 
 //web&&mobile
