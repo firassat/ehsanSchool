@@ -12,6 +12,7 @@ import {
   deleteStudent,
   deleteStudentsAbsence,
   deleteStudentViolation,
+  editStudent,
   homePage,
   promotion,
   registerEvent,
@@ -68,6 +69,7 @@ studentsRoutes.post("/deleteFile", deleteFile);
 studentsRoutes.get("/showFiles", checkUserId, showFiles);
 studentsRoutes.get("/showComplaint", showComplaint);
 studentsRoutes.get("/promotion/:id", promotion);
+studentsRoutes.post("/editStudent", editStudent);
 
 //mobile
 studentsRoutes.post("/studentLogin", studentLogin);

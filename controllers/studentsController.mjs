@@ -21,6 +21,7 @@ import { WeekSchedule } from "../models/WeekSchedule.mjs";
 import { ExamSchedule } from "../models/ExamSchedule.mjs";
 import { Rol } from "../models/Rol.mjs";
 import moment from "moment";
+// import { notification } from "../config/notification.mjs";
 
 //web
 export const webHomePage = asyncHandler(async (req, res) => {
@@ -531,6 +532,19 @@ export const promotion = asyncHandler(async (req, res) => {
     status: true,
     studentsPromotion,
   });
+});
+export const editStudent = asyncHandler(async (req, res) => {
+  if (!req.body.id) {
+    return res.status(400).json({
+      status: false,
+      message: "حدث خطأ ما",
+    });
+  }
+  const result = await Students.findByIdAndUpdate(req.body.id, {
+    $set: req.body,
+  });
+
+  return res.json({ status: true, message: "تم التعديل بنجاح" });
 });
 
 //mobile
