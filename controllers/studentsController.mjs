@@ -21,7 +21,7 @@ import { WeekSchedule } from "../models/WeekSchedule.mjs";
 import { ExamSchedule } from "../models/ExamSchedule.mjs";
 import { Rol } from "../models/Rol.mjs";
 import moment from "moment";
-// import { notification } from "../config/notification.mjs";
+import { notification } from "../config/notification.mjs";
 
 //web
 export const webHomePage = asyncHandler(async (req, res) => {
@@ -385,7 +385,7 @@ export const addStudentsMarks = async (req, res) => {
     });
   }
 };
-export const addFile = async (req, res) => {
+export const addFile = async (req, res, next) => {
   try {
     const { error } = FilesValidate(req.body);
     if (error) {
@@ -395,13 +395,16 @@ export const addFile = async (req, res) => {
     }
     if (req.files?.length > 0) {
       const { id } = await uploadFile(req.files[0]);
-
       if (id) {
         req.body.url = `https://drive.usercontent.google.com/download?id=${id}&export=download`;
       }
     }
     const file = await new Files(req.body).save();
-
+    const students = await Students.find({
+      class_id: { $in: req.body.classes_id },
+    });
+    const stu = students.map((i) => i.token).filter((i) => i != null);
+    notification(req, res, next, "تم اضافة ملف جديد لصفك", "ملف جديد", stu);
     return res.json({
       status: true,
       message: "تم اضافة الملف بنجاح",
@@ -573,6 +576,9 @@ export const studentLogin = asyncHandler(async (req, res) => {
   if (name1 !== name2) {
     return res.json({ message: "الاسم غير صحيح" });
   }
+  const stu = await Students.findByIdAndUpdate(req.body.id, {
+    $set: { token: req.body.token },
+  });
   const access_token = jwt.sign({ id: student._id }, process.env.SECRTKEY);
   return res.json({ data: student, token: access_token });
 });
@@ -1020,6 +1026,17 @@ export const showStudentExamSchedule = asyncHandler(async (req, res) => {
     status: true,
     data,
   });
+});
+export const testNotification = asyncHandler(async (req, res, next) => {
+  notification(
+    req,
+    res,
+    next,
+    req.body.message,
+    req.body.title,
+    req.body.token
+  );
+  return res;
 });
 
 //web&&mobile

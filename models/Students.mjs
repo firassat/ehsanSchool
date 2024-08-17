@@ -38,6 +38,9 @@ const StudentsSchema = new mongoose.Schema(
     mobile_num: {
       type: String,
     },
+    token: {
+      type: String,
+    },
 
     class_id: {
       type: mongoose.Schema.Types.ObjectId,

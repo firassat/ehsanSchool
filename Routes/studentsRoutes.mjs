@@ -35,6 +35,7 @@ import {
   showStudentWeekSchedule,
   showSubjectForStudent,
   studentLogin,
+  testNotification,
   unRegisterEvent,
   webHomePage,
 } from "../controllers/studentsController.mjs";
@@ -102,6 +103,7 @@ studentsRoutes.get(
   checkStudentId,
   showStudentExamSchedule
 );
+studentsRoutes.post("/testNotification", testNotification);
 
 //web&&mobile
 studentsRoutes.get("/showEvents", showEvents);
