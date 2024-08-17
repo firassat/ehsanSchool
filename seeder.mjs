@@ -10,11 +10,11 @@ import connectDb from "./config/conectDb.mjs";
 import { configDotenv } from "dotenv";
 import { Classes } from "./models/Classes.mjs";
 
-import { Social_statuses } from "./models/social_statuses.mjs";
+import { Social_statuses } from "./models/Social_statuses.mjs";
 import { Sectors } from "./models/Sectors.mjs";
 import { Nationalities } from "./models/Nationalities.mjs";
 import { Military_services } from "./models/Military_services.mjs";
-import { Subject } from "./models/Subject.mjs";
+import { Subjects } from "./models/Subjects.mjs";
 
 configDotenv();
 await connectDb();
@@ -42,22 +42,22 @@ const importSubjects = async () => {
   try {
     const idClassfor7 = await Classes.findOne({ name: "السابع" });
     const allSubjects7 = subjects(idClassfor7.id);
-    await Subject.insertMany(allSubjects7);
+    await Subjects.insertMany(allSubjects7);
     const idClassfor8 = await Classes.findOne({ name: "الثامن" });
     const allSubjects8 = subjects(idClassfor8.id);
-    await Subject.insertMany(allSubjects8);
+    await Subjects.insertMany(allSubjects8);
     const idClassfor9 = await Classes.findOne({ name: "التاسع" });
     const allSubjects9 = subjects(idClassfor9.id);
-    await Subject.insertMany(allSubjects9);
+    await Subjects.insertMany(allSubjects9);
     const idClassfor10 = await Classes.findOne({ name: "العاشر" });
     const allSubjects10 = subjects(idClassfor10.id);
-    await Subject.insertMany(allSubjects10);
+    await Subjects.insertMany(allSubjects10);
     const idClassfor11 = await Classes.findOne({ name: "الحادي عشر" });
     const allSubjects11 = subjects(idClassfor11.id);
-    await Subject.insertMany(allSubjects11);
+    await Subjects.insertMany(allSubjects11);
     const idClassfor12 = await Classes.findOne({ name: "البكالوريا" });
     const allSubjects12 = subjects(idClassfor12.id);
-    await Subject.insertMany(allSubjects12);
+    await Subjects.insertMany(allSubjects12);
 
     console.log(" Imported");
   } catch (error) {

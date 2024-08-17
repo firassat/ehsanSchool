@@ -30,6 +30,6 @@ app.use("/api", manager);
 app.use(notfound);
 app.use(errorHandler);
 
-app.listen(8000, () => {
+app.listen(8000, "0.0.0.0", () => {
   console.log("server is running");
 });

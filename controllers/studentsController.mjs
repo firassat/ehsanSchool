@@ -124,17 +124,20 @@ export const showStudentInfo = asyncHandler(async (req, res) => {
 });
 export const searchStudent = asyncHandler(async (req, res) => {
   let data;
-  if (req.body.class_id) {
+  if (req.body.class_id && req.body.name) {
     data = await Students.find({
       full_name: { $regex: req.body.name },
       class_id: req.body.class_id,
     }).populate("class_id");
-  } else {
+  } else if (!req.body.class_id) {
     data = await Students.find({
       full_name: { $regex: req.body.name },
     }).populate("class_id");
-  }
-  if (!data) {
+  } else if (req.body.class_id && !req.body.name) {
+    data = await Students.find({
+      class_id: req.body.class_id,
+    }).populate("class_id");
+  } else {
     return res.json({
       status: false,
       message: "حدث خطأ ما",
