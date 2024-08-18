@@ -256,10 +256,9 @@ export const addStudentViolation = async (req, res) => {
   }
 };
 export const showStudentsViolation = asyncHandler(async (req, res) => {
-  const data = await Student_violation.find().populate(
-    "student_id",
-    "full_name"
-  );
+  const data = await Student_violation.find({
+    student_id: req.body.student_id,
+  }).populate("student_id", "full_name");
   if (!data) {
     return res.json({
       status: false,
