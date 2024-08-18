@@ -49,6 +49,7 @@ export async function notification(req, res, next, message, title, token) {
         title,
         body: message,
       },
+      data: { title, body: message },
       tokens: token,
     };
 
