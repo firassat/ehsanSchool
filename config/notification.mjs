@@ -9,6 +9,7 @@ export async function notification(req, res, next, message, title, token) {
     if (!token || token.length < 1) {
       return;
     }
+
     const messagePayload = {
       notification: {
         title: "ادراة معهد الاحسان",

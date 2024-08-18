@@ -402,19 +402,19 @@ export const addStudentsMarks = async (req, res, next) => {
         student_id: student.id,
         mark: student.mark,
       }).save();
-      const students = await Students.findById(student?.id);
-      console.log(students.token);
-
-      const resp = await notification(
-        req,
-        res,
-        next,
-        "تم اضافة علامة جديد لك",
-        "ملف جديد",
-        [students.token]
-      );
     });
 
+    const students = await Students.find({
+      _id: { $in: req.body.students.map((i) => i.id) },
+    });
+    const resp = await notification(
+      req,
+      res,
+      next,
+      "تم اضافة علامة جديد لك",
+      "ملف جديد",
+      students.map((i) => i.token).filter((i) => i !== null)
+    );
     return res.json({
       status: true,
       message: "تم اضافة العلامات بنجاح",
