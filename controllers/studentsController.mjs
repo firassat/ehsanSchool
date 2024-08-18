@@ -224,12 +224,20 @@ export const addStudentAbsence = async (req, res, next) => {
 
     const students = await Students.findById(req.body.student_id);
     const stu = [students?.token];
-    notification(req, res, next, "تأخر الطالب عن الصف ", "تأخير", stu);
+    const resp = await notification(
+      req,
+      res,
+      next,
+      "تأخر الطالب عن الصف ",
+      "تأخير",
+      stu
+    );
 
     return res.json({
       status: true,
       message: "تم اضافة التأخير بنجاح",
       data: result,
+      resp,
     });
   } catch (error) {
     return res.status(500).json({
@@ -250,7 +258,7 @@ export const addStudentViolation = async (req, res, next) => {
     const result = await absence.save();
     const students = await Students.findById(req.body.student_id);
     const stu = [students?.token];
-    notification(
+    const resp = await notification(
       req,
       res,
       next,
@@ -262,6 +270,7 @@ export const addStudentViolation = async (req, res, next) => {
       status: true,
       message: "تم اضافة المخالفة بنجاح",
       data: result,
+      resp,
     });
   } catch (error) {
     return res.status(500).json({
@@ -418,11 +427,21 @@ export const addFile = async (req, res, next) => {
     });
 
     const stu = students.map((i) => i.token).filter((i) => i != null);
-    notification(req, res, next, "تم اضافة ملف جديد لصفك", "ملف جديد", stu);
+    console.log(stu);
+
+    const resp = await notification(
+      req,
+      res,
+      next,
+      "تم اضافة ملف جديد لصفك",
+      "ملف جديد",
+      stu
+    );
     return res.json({
       status: true,
       message: "تم اضافة الملف بنجاح",
       file,
+      resp,
     });
   } catch (error) {
     return res.status(500).json({
@@ -1039,9 +1058,16 @@ export const showStudentExamSchedule = asyncHandler(async (req, res) => {
   });
 });
 export const testNotification = asyncHandler(async (req, res, next) => {
-  const tokens = [req.body.token];
-  notification(req, res, next, req.body.message, req.body.title, tokens);
-  return res.json({ message: "تم ارسال الاشعار" });
+  const tokens = req.body.token;
+  const resp = await notification(
+    req,
+    res,
+    next,
+    req.body.message,
+    req.body.title,
+    [tokens]
+  );
+  return res.json({ message: "تم ارسال الاشعار", resp });
 });
 
 //web&&mobile

@@ -1,67 +1,35 @@
-// import { getMessaging } from "firebase-admin/messaging";
-// import admin from "firebase-admin";
-
-// export function notification(req, res, next) {
-//   const serviceAccount = "./ehsan-notification.json";
-//   admin.initializeApp({
-//     credential: admin.credential.cert(serviceAccount),
-//   });
-//   //   const receivedToken = req.body.fcmToken;
-
-//   const message = {
-//     notification: {
-//       title: "Notif",
-//       body: "This is a Test Notification",
-//     },
-//     topic: "all",
-//   };
-
-//   getMessaging()
-//     .send(message)
-//     .then((response) => {
-//       res.status(200).json({
-//         message: "Successfully sent message",
-//         token: response,
-//       });
-//       console.log("Successfully sent message:", response);
-//     })
-//     .catch((error) => {
-//       res.status(400);
-//       res.send(error);
-//       console.log("Error sending message:", error);
-//     });
-// }
 import admin from "firebase-admin";
 
-// Initialize Firebase Admin SDK
-const serviceAccount = "./ehsan-notification.json"; // Replace with your service account key file
+const serviceAccount = "./ehsan-notification.json";
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
-// Define your API endpoint
 export async function notification(req, res, next, message, title, token) {
   try {
-    // const { token, message } = req.body;
     if (!token || token.length < 1) {
       return;
     }
-    // Construct the message payload
     const messagePayload = {
       notification: {
-        title,
+        title: "ادراة معهد الاحسان",
         body: message,
       },
-      data: { title, body: message },
+      android: {
+        notification: {
+          body: message,
+          title: "ادراة معهد الاحسان",
+          sound: "default",
+        },
+      },
+
+      data: { title: "ادراة معهد الاحسان", body: message, sound: "default" },
       tokens: token,
     };
-
-    // Send the message using the Firebase Admin SDK
     const response = await admin
       .messaging()
       .sendEachForMulticast(messagePayload);
+    return response;
   } catch (error) {
-    return res
-      .status(500)
-      .json({ error: "Failed to send notification", error: error.message });
+    return error;
   }
 }

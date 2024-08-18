@@ -38,7 +38,7 @@ export const addEvent = async (req, res, next) => {
 
     const students = await Students.find();
     const stu = students.map((i) => i.token).filter((i) => i != null);
-    notification(
+    const resp = await notification(
       req,
       res,
       next,
@@ -51,6 +51,7 @@ export const addEvent = async (req, res, next) => {
       status: true,
       message: "تم اضافة الفعالية بنجاح",
       data: result,
+      resp,
     });
   } catch (error) {
     return res.status(500).json({
