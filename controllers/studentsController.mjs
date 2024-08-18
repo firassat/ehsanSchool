@@ -415,12 +415,14 @@ export const addFile = async (req, res, next) => {
         message: error.message,
       });
     }
+
     if (req.files?.length > 0) {
       const { id } = await uploadFile(req.files[0]);
       if (id) {
         req.body.url = `https://drive.usercontent.google.com/download?id=${id}&export=download`;
       }
     }
+
     const file = await new Files(req.body).save();
     const students = await Students.find({
       class_id: { $in: req.body.classes_id },
@@ -968,7 +970,7 @@ export const showStudentWeekSchedule = asyncHandler(async (req, res) => {
         d.push({
           _id: "1",
           name: "استراحة",
-          __v: 0,
+          order: 3.5,
           from: "10:15",
           to: "10:30",
         });
@@ -983,7 +985,7 @@ export const showStudentWeekSchedule = asyncHandler(async (req, res) => {
         son.push({
           _id: "2",
           name: "استراحة",
-          __v: 0,
+          order: 5.5,
           from: "12:15",
           to: "12:30",
         });
@@ -999,6 +1001,11 @@ export const showStudentWeekSchedule = asyncHandler(async (req, res) => {
     });
   });
 
+  son.sort((a, b) => a.order - b.order);
+  mun.sort((a, b) => a.order - b.order);
+  the.sort((a, b) => a.order - b.order);
+  wen.sort((a, b) => a.order - b.order);
+  tus.sort((a, b) => a.order - b.order);
   return res.json({
     status: true,
     son,
