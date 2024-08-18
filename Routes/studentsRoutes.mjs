@@ -67,7 +67,7 @@ studentsRoutes.post(
 studentsRoutes.post("/addStudentsMarks", addStudentsMarks);
 studentsRoutes.post("/addFile", upload.any(), addFile);
 studentsRoutes.post("/deleteFile", deleteFile);
-studentsRoutes.get("/showFiles", checkUserId, showFiles);
+studentsRoutes.get("/showFiles", showFiles);
 studentsRoutes.get("/showComplaint", showComplaint);
 studentsRoutes.get("/promotion/:id", promotion);
 studentsRoutes.post("/editStudent", editStudent);

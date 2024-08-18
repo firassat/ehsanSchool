@@ -445,10 +445,7 @@ export const deleteFile = asyncHandler(async (req, res) => {
   });
 });
 export const showFiles = asyncHandler(async (req, res) => {
-  const result = await Classes.find({ admin: req.user_id });
-  const files = await Files.find({
-    classes_id: { $in: result.map((i) => i.id) },
-  }).populate([
+  const files = await Files.find({}).populate([
     { path: "subject_id", select: ["name", "-_id"] },
     { path: "classes_id", select: ["name", "section", "-_id"] },
   ]);
