@@ -367,7 +367,7 @@ export const showStudentsAndSubjectForClass = asyncHandler(async (req, res) => {
     subject: subject,
   });
 });
-export const addStudentsMarks = async (req, res) => {
+export const addStudentsMarks = async (req, res, next) => {
   try {
     const { error } = marksValidate(req.body);
     if (error) {
@@ -375,13 +375,20 @@ export const addStudentsMarks = async (req, res) => {
         message: error.message,
       });
     }
-    const type = req.body.type;
-    const subject_id = req.body.subject_id;
-    const full_mark = req.body.full_mark;
-    const date = req.body.date;
+    const type = req.body?.type;
+    const subject_id = req.body?.subject_id;
+    const full_mark = req.body?.full_mark;
+    const date = req.body?.date;
 
     req.body.students?.map(async (student) => {
-      if (!student.id || !student.mark) {
+      if (
+        !student?.id ||
+        !student?.mark ||
+        !type ||
+        !subject_id ||
+        !full_mark ||
+        !date
+      ) {
         return res.status(450).json({
           status: false,
           message: "حدث خطأ ما",
@@ -395,6 +402,17 @@ export const addStudentsMarks = async (req, res) => {
         student_id: student.id,
         mark: student.mark,
       }).save();
+      const students = await Students.findById(student?.id);
+      console.log(students.token);
+
+      const resp = await notification(
+        req,
+        res,
+        next,
+        "تم اضافة علامة جديد لك",
+        "ملف جديد",
+        [students.token]
+      );
     });
 
     return res.json({
