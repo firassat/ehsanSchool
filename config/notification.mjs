@@ -42,7 +42,9 @@ admin.initializeApp({
 export async function notification(req, res, next, message, title, token) {
   try {
     // const { token, message } = req.body;
-
+    if (!token || token.length < 1) {
+      return;
+    }
     // Construct the message payload
     const messagePayload = {
       notification: {
@@ -57,9 +59,9 @@ export async function notification(req, res, next, message, title, token) {
     const response = await admin
       .messaging()
       .sendEachForMulticast(messagePayload);
-    next();
   } catch (error) {
-    console.error("Error sending message:", error);
-    res.status(500).json({ error: "Failed to send notification" });
+    return res
+      .status(500)
+      .json({ error: "Failed to send notification", error: error.message });
   }
 }

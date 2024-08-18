@@ -237,7 +237,7 @@ export const addStudentAbsence = async (req, res, next) => {
     });
   }
 };
-export const addStudentViolation = async (req, res) => {
+export const addStudentViolation = async (req, res, next) => {
   try {
     const { error } = Student_violationValidate(req.body);
     if (error) {
@@ -416,6 +416,7 @@ export const addFile = async (req, res, next) => {
     const students = await Students.find({
       class_id: { $in: req.body.classes_id },
     });
+
     const stu = students.map((i) => i.token).filter((i) => i != null);
     notification(req, res, next, "تم اضافة ملف جديد لصفك", "ملف جديد", stu);
     return res.json({
@@ -437,7 +438,7 @@ export const deleteFile = asyncHandler(async (req, res) => {
       message: "حدث خطأ ما",
     });
   }
-  deleteFile2(data.url?.slice(49, 82));
+  if (data.url) deleteFile2(data.url?.slice(49, 82));
 
   return res.json({
     status: true,
