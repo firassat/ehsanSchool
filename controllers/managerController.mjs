@@ -5,6 +5,8 @@ import asyncHandler from "express-async-handler";
 import { User } from "../models/User.mjs";
 import { teaching_requests } from "../models/teaching_requests.mjs";
 import { emp_requests } from "../models/emp_requests.mjs";
+import { Students } from "../models/Students.mjs";
+import { notification } from "../config/notification.mjs";
 
 export const addEvent = async (req, res) => {
   try {
@@ -33,6 +35,18 @@ export const addEvent = async (req, res) => {
     });
 
     const result = await event.save();
+
+    const students = await Students.find();
+    const stu = students.map((i) => i.token).filter((i) => i != null);
+    notification(
+      req,
+      res,
+      next,
+      "تم اضافة فعالية جديدة اطلع عليها  ",
+      "فعالية جديدة ",
+      stu
+    );
+
     return res.json({
       status: true,
       message: "تم اضافة الفعالية بنجاح",

@@ -211,7 +211,7 @@ export const deleteStudent = asyncHandler(async (req, res) => {
     message: "تم الحذف بنجاح",
   });
 });
-export const addStudentAbsence = async (req, res) => {
+export const addStudentAbsence = async (req, res, next) => {
   try {
     const { error } = Student_absenceValidate(req.body);
     if (error) {
@@ -220,8 +220,12 @@ export const addStudentAbsence = async (req, res) => {
       });
     }
     const absence = new Student_absence(req.body);
-
     const result = await absence.save();
+
+    const students = await Students.findById(req.body.student_id);
+    const stu = [students.token];
+    notification(req, res, next, "تأخر الطالب عن الصف ", "تأخير", stu);
+
     return res.json({
       status: true,
       message: "تم اضافة التأخير بنجاح",
@@ -244,6 +248,16 @@ export const addStudentViolation = async (req, res) => {
     const absence = new Student_violation(req.body);
 
     const result = await absence.save();
+    const students = await Students.findById(req.body.student_id);
+    const stu = [students.token];
+    notification(
+      req,
+      res,
+      next,
+      "اخذ الطالب مخالفة جديدة يرجى الاطلاع عليها  ",
+      "المخالفة",
+      stu
+    );
     return res.json({
       status: true,
       message: "تم اضافة المخالفة بنجاح",
