@@ -393,28 +393,33 @@ export const addStudentsMarks = async (req, res, next) => {
           status: false,
           message: "حدث خطأ ما",
         });
+      } else {
+        const mark = await new Marks({
+          type,
+          date,
+          subject_id,
+          full_mark,
+          student_id: student.id,
+          mark: student.mark,
+        }).save();
       }
-      const mark = await new Marks({
-        type,
-        date,
-        subject_id,
-        full_mark,
-        student_id: student.id,
-        mark: student.mark,
-      }).save();
     });
-
-    const students = await Students.find({
-      _id: { $in: req.body.students.map((i) => i.id) },
-    });
-    const resp = await notification(
-      req,
-      res,
-      next,
-      "تم اضافة علامة جديد لك",
-      "ملف جديد",
-      students.map((i) => i.token).filter((i) => i !== null)
-    );
+    if (req.body.students?.length > 0) {
+      const students = await Students.find({
+        _id: { $in: req.body.students?.map((i) => i.id) },
+      });
+      const tokens =
+        students?.length > 0 &&
+        students?.map((i) => i.token)?.filter((i) => i !== null);
+      const resp = await notification(
+        req,
+        res,
+        next,
+        "تم اضافة علامة جديد لك",
+        "ملف جديد",
+        tokens
+      );
+    }
     return res.json({
       status: true,
       message: "تم اضافة العلامات بنجاح",
