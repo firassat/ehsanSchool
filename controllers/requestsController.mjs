@@ -186,6 +186,7 @@ export const showReqData = asyncHandler(async (req, res) => {
       tele_num: result.tele_num,
       mobile_num: result.mobile_num,
       rating: result.rating,
+      approve: result.approve,
       social_status: result.social_status_id.name,
       military_service: result.military_service_id.name,
       nationality: result.nationality_id.name,
@@ -230,6 +231,7 @@ export const showReqData = asyncHandler(async (req, res) => {
       tele_num: result.tele_num,
       mobile_num: result.mobile_num,
       rating: result.rating,
+      approve: result.approve,
       social_status: result.social_status_id.name,
       military_service: result.military_service_id.name,
     };
