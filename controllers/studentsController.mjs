@@ -966,6 +966,7 @@ export const showStudentWeekSchedule = asyncHandler(async (req, res) => {
   const result = await WeekSchedule.find({
     class_id: classStudent.class_id,
   }).lean();
+
   const son = result.filter((i) => i.day === "الاحد");
   const mun = result.filter((i) => i.day === "الاثنين");
   const the = result.filter((i) => i.day === "الثلاثاء");
@@ -1000,7 +1001,7 @@ export const showStudentWeekSchedule = asyncHandler(async (req, res) => {
       if (i.order === 5) {
         i.from = "11:15";
         i.to = "12:00";
-        son.push({
+        d.push({
           _id: "2",
           name: "استراحة",
           order: 5.5,
@@ -1012,7 +1013,7 @@ export const showStudentWeekSchedule = asyncHandler(async (req, res) => {
         i.from = "12:15";
         i.to = "01:00";
       }
-      if (i.order === 6) {
+      if (i.order === 7) {
         i.from = "01:00";
         i.to = "01:45";
       }
