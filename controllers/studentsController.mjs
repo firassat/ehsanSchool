@@ -223,7 +223,7 @@ export const addStudentAbsence = async (req, res, next) => {
     const result = await absence.save();
 
     const students = await Students.findById(req.body.student_id);
-    const stu = [students.token];
+    const stu = [students?.token];
     notification(req, res, next, "تأخر الطالب عن الصف ", "تأخير", stu);
 
     return res.json({
@@ -249,7 +249,7 @@ export const addStudentViolation = async (req, res) => {
 
     const result = await absence.save();
     const students = await Students.findById(req.body.student_id);
-    const stu = [students.token];
+    const stu = [students?.token];
     notification(
       req,
       res,

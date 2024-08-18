@@ -8,7 +8,7 @@ import { emp_requests } from "../models/emp_requests.mjs";
 import { Students } from "../models/Students.mjs";
 import { notification } from "../config/notification.mjs";
 
-export const addEvent = async (req, res) => {
+export const addEvent = async (req, res, next) => {
   try {
     const { error } = eventValidate(req.body);
     if (error) {
